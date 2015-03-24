@@ -12,7 +12,7 @@ set :bundle_without, [:darwin, :development, :test]
 require 'bundler/capistrano'
 
 # RVM setup
-set(:rvm_ruby_string) {"ruby-2.1.1@#{application}-#{stage}"}
+set(:rvm_ruby_string) {"ruby-2.1.4@#{application}-#{stage}"}
 set :rvm_type, :system
 set :rvm_install_with_sudo, true
 set :rvm_install_ruby, :install
@@ -38,4 +38,16 @@ ssh_options[:forward_agent] = true
 
 set :use_private_mysql_ip, true
 
+load 'config/capistrano_recipes/nginx/generate_config'
 load 'config/capistrano_recipes/ruby/rvm'
+load 'config/capistrano_recipes/rails/symlinks'
+load 'config/capistrano_recipes/passenger_server/passenger'
+
+# Custom cap tasks - taken from rails/base
+set :requires_passenger, true
+after "deploy:setup",'nginx:generate_config'
+after 'deploy:cold',"passenger:restart"
+after "deploy", "rails:update_shared_symlinks", "deploy:set_ownership","passenger:restart"
+
+after "deploy:setup", "deploy:cold"
+after "passenger:restart", "deploy:set_ownership"
