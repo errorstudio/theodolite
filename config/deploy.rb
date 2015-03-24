@@ -38,4 +38,4 @@ ssh_options[:forward_agent] = true
 
 set :use_private_mysql_ip, true
 
-load 'config/capistrano_recipes/rails/base'
+load 'config/capistrano_recipes/ruby/rvm'
