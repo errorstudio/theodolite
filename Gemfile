@@ -68,3 +68,8 @@ group :test do
   gem 'webmock'
   gem 'json_spec'
 end
+
+group :staging do 
+  gem 'passenger'
+end
+
